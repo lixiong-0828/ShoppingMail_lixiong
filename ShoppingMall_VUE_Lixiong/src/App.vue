@@ -29,24 +29,29 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 export default {
   name: 'App',
   setup() {
     const router = useRouter()
-    const token = localStorage.getItem('token')
-    const role = ref(localStorage.getItem('role') || '')
-    const userNameCh = ref(localStorage.getItem('userNameCh') || '')
-    const loginTime = ref(parseInt(localStorage.getItem('loginTime')) || 0)
+    const route = useRoute()
+    const role = ref('')
+    const userNameCh = ref('')
+    const loginTime = ref(0)
+    const isLoggedIn = ref(false)
     
     const currentTime = ref('')
     const loginDuration = ref('')
     let timer = null
 
-    const isLoggedIn = computed(() => !!token)
-    const isAdmin = computed(() => role.value === 'Admin')
+    const checkLogin = () => {
+      isLoggedIn.value = !!localStorage.getItem('token')
+      role.value = localStorage.getItem('role') || ''
+      userNameCh.value = localStorage.getItem('userNameCh') || ''
+      loginTime.value = parseInt(localStorage.getItem('loginTime')) || 0
+    }
 
     const updateTime = () => {
       const now = new Date()
@@ -73,17 +78,26 @@ export default {
       role.value = ''
       userNameCh.value = ''
       loginTime.value = 0
+      isLoggedIn.value = false
       if (timer) clearInterval(timer)
       router.push('/login')
     }
 
+    watch(() => route.path, () => {
+      checkLogin()
+    }, { immediate: true })
+
     onMounted(() => {
-      if (!loginTime.value) {
+      checkLogin()
+      if (!loginTime.value && isLoggedIn.value) {
         loginTime.value = Date.now()
         localStorage.setItem('loginTime', loginTime.value)
       }
       updateTime()
-      timer = setInterval(updateTime, 1000)
+      timer = setInterval(() => {
+        updateTime()
+        checkLogin()
+      }, 1000)
     })
 
     onUnmounted(() => {
@@ -92,7 +106,6 @@ export default {
 
     return {
       isLoggedIn,
-      isAdmin,
       role,
       userNameCh,
       currentTime,

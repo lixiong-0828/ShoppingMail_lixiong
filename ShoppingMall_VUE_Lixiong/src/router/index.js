@@ -42,25 +42,17 @@ const router = createRouter({
   routes
 })
 
-let isAuthChecked = false
+const getToken = () => {
+  try {
+    return localStorage.getItem('token')
+  } catch {
+    return null
+  }
+}
 
 router.beforeEach((to, from, next) => {
-  if (!isAuthChecked) {
-    setTimeout(() => {
-      const token = localStorage.getItem('token')
-      if (to.path !== '/login' && !token) {
-        next('/login')
-      } else if (to.path === '/login' && token) {
-        next('/home')
-      } else {
-        next()
-      }
-      isAuthChecked = true
-    }, 100)
-    return
-  }
+  const token = getToken()
   
-  const token = localStorage.getItem('token')
   if (to.path !== '/login' && !token) {
     next('/login')
   } else if (to.path === '/login' && token) {
