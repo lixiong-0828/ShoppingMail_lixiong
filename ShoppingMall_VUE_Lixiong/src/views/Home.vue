@@ -19,6 +19,12 @@
           <h3>用户管理</h3>
           <p>管理系统用户</p>
         </div>
+        <!-- ========== 这里是追加的 批量登录 功能卡片 ========== -->
+        <div class="feature-card" @click="goTo('/batchImport')">
+          <div class="icon">📤</div>
+          <h3>批量登录</h3>
+          <p>Excel批量导入</p>
+        </div>
       </div>
     </div>
   </div>

@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import ProductList from '../views/ProductList.vue'
 import ProductManagement from '../views/ProductManagement.vue'
 import UserManagement from '../views/UserManagement.vue'
+import BatchImport from '../views/BatchImport.vue'
 
 const routes = [
   {
@@ -34,6 +35,11 @@ const routes = [
     path: '/user-management',
     name: 'UserManagement',
     component: UserManagement
+  },
+  {
+    path: '/batchImport',
+    name: 'BatchImport',
+    component: BatchImport   // 统一风格
   }
 ]
 

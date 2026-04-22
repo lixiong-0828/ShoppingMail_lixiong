@@ -8,6 +8,7 @@
           <router-link to="/product-list" class="menu-item">商品一览</router-link>
           <router-link to="/product-management" class="menu-item">商品管理</router-link>
           <router-link to="/user-management" class="menu-item">用户管理</router-link>
+          <router-link to="/batchImport" class="menu-item">批量登录</router-link>
         </nav>
         <div class="sidebar-footer">
           <div class="user-info">
