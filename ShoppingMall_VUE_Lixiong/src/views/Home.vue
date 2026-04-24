@@ -19,11 +19,15 @@
           <h3>用户管理</h3>
           <p>管理系统用户</p>
         </div>
-        <!-- ========== 这里是追加的 批量登录 功能卡片 ========== -->
         <div class="feature-card" @click="goTo('/batchImport')">
           <div class="icon">📤</div>
           <h3>批量登录</h3>
           <p>Excel批量导入</p>
+        </div>
+        <div class="feature-card" @click="goTo('/shopping-history')">
+          <div class="icon">📋</div>
+          <h3>购物履历</h3>
+          <p>查看购买记录</p>
         </div>
       </div>
     </div>

@@ -53,4 +53,9 @@ export const uploadAPI = {
   }
 }
 
+export const cartAPI = {
+  getHistory: (category) => api.get('/cart/history', { params: { category } }),
+  buy: (productId, quantity) => api.post('/cart/buy', { productId, quantity })
+}
+
 export default api

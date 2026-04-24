@@ -9,6 +9,7 @@
           <router-link to="/product-management" class="menu-item">商品管理</router-link>
           <router-link to="/user-management" class="menu-item">用户管理</router-link>
           <router-link to="/batchImport" class="menu-item">批量登录</router-link>
+          <router-link to="/shopping-history" class="menu-item">购物履历</router-link>
         </nav>
         <div class="sidebar-footer">
           <div class="user-info">

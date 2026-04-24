@@ -5,6 +5,7 @@ import ProductList from '../views/ProductList.vue'
 import ProductManagement from '../views/ProductManagement.vue'
 import UserManagement from '../views/UserManagement.vue'
 import BatchImport from '../views/BatchImport.vue'
+import ShoppingHistory from '../views/ShoppingHistory.vue'
 
 const routes = [
   {
@@ -39,7 +40,12 @@ const routes = [
   {
     path: '/batchImport',
     name: 'BatchImport',
-    component: BatchImport   // 统一风格
+    component: BatchImport
+  },
+  {
+    path: '/shopping-history',
+    name: 'ShoppingHistory',
+    component: ShoppingHistory
   }
 ]
 

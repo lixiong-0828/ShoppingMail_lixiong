@@ -27,4 +27,4 @@ jwt:
 
 file:
   upload:
-    path: ./uploads
+    path: C:\javaproject\ShoppingMail\ShoppingMall_SpringBoot_Lixiong\uploads
