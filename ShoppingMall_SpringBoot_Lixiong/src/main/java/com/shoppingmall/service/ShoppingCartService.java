@@ -72,6 +72,27 @@ public class ShoppingCartService {
         }).toList();
     }
     
+    public List<Map<String, Object>> getAllHistory() {
+        List<ShoppingCart> carts = shoppingCartRepository.findAll();
+        return carts.stream().map(cart -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", cart.getId());
+            map.put("username", cart.getUsername());
+            map.put("productId", cart.getProductId());
+            map.put("quantity", cart.getQuantity());
+            map.put("createdAt", cart.getCreatedAt());
+            
+            Optional<Products> product = productRepository.findById(cart.getProductId());
+            product.ifPresent(p -> {
+                map.put("productName", p.getProductName());
+                map.put("price", p.getPrice());
+                map.put("category", p.getCategory());
+                map.put("imageUrl", p.getImageUrl());
+            });
+            return map;
+        }).toList();
+    }
+    
     @Transactional
     public Map<String, Object> addToCart(String username, Long productId, Integer quantity) {
         Map<String, Object> result = new HashMap<>();

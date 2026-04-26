@@ -33,6 +33,23 @@ public class ShoppingCartController {
         return ResponseEntity.ok(Map.of("success", true, "data", history));
     }
     
+    @GetMapping("/history-all")
+    public ResponseEntity<Map<String, Object>> getHistoryAll(
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body(Map.of("success", false, "message", "Unauthorized"));
+        }
+        String jwt = token.substring(7);
+        String role = jwtUtil.getRoleFromToken(jwt);
+        
+        if (!"Admin".equals(role)) {
+            return ResponseEntity.status(403).body(Map.of("success", false, "message", "Forbidden"));
+        }
+        
+        List<Map<String, Object>> history = shoppingCartService.getAllHistory();
+        return ResponseEntity.ok(Map.of("success", true, "data", history));
+    }
+    
     @PostMapping("/buy")
     public ResponseEntity<Map<String, Object>> buy(
             @RequestHeader(value = "Authorization", required = false) String token,
