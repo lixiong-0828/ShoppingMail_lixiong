@@ -43,4 +43,16 @@ public class UserController {
         }
         return ResponseEntity.ok(user);
     }
+    
+    @PutMapping("/{username}")
+    public ResponseEntity<Map<String, Object>> updateUser(@PathVariable String username, @RequestBody Users user) {
+        Map<String, Object> result = userService.updateUser(username, user);
+        return ResponseEntity.ok(result);
+    }
+    
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable String username) {
+        Map<String, Object> result = userService.deleteUser(username);
+        return ResponseEntity.ok(result);
+    }
 }

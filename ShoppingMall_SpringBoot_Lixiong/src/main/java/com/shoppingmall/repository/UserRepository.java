@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<Users, String> {
     List<Users> searchUsers(@Param("userName") String userName, @Param("role") String role);
     
     boolean existsByUserNameEn(String userNameEn);
+    
+    void deleteByUserNameEn(String userNameEn);
 }

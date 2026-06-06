@@ -30,6 +30,7 @@
             <th>用户名(CH)</th>
             <th>权限</th>
             <th>创建时间</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -40,6 +41,10 @@
               <span :class="['role-tag', user.role.toLowerCase()]">{{ user.role }}</span>
             </td>
             <td>{{ formatDate(user.createdAt) }}</td>
+            <td>
+              <button @click="editUser(user)" class="edit-btn">编辑</button>
+              <button @click="deleteUser(user.userNameEn)" class="delete-btn">删除</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -47,12 +52,12 @@
     </div>
 
     <div class="create-section">
-      <h3>登录新用户</h3>
-      <form @submit.prevent="createUser">
+      <h3>{{ editMode ? '编辑用户' : '登录新用户' }}</h3>
+      <form @submit.prevent="submitUser">
         <div class="form-row">
           <div class="form-group">
             <label>UserName(EN) * (Primary Key)</label>
-            <input v-model="newUser.userNameEn" type="text" required />
+            <input v-model="newUser.userNameEn" type="text" :disabled="editMode" required />
           </div>
           <div class="form-group">
             <label>UserName(CH) *</label>
@@ -61,8 +66,8 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>密码 *</label>
-            <input v-model="newUser.password" type="password" required />
+            <label>{{ editMode ? '密码 (留空则不修改)' : '密码 *' }}</label>
+            <input v-model="newUser.password" type="password" :required="!editMode" />
           </div>
           <div class="form-group">
             <label>权限 *</label>
@@ -72,7 +77,10 @@
             </select>
           </div>
         </div>
-        <button type="submit" class="submit-btn">创建用户</button>
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">{{ editMode ? '更新' : '创建用户' }}</button>
+          <button v-if="editMode" type="button" class="cancel-btn" @click="cancelEdit">取消</button>
+        </div>
         <div v-if="message" :class="['message', message.type]">{{ message.text }}</div>
       </form>
     </div>
@@ -90,6 +98,8 @@ export default {
     const searchUserName = ref('')
     const searchRole = ref('')
     const message = ref(null)
+    const editMode = ref(false)
+    const editUsername = ref('')
     const newUser = ref({
       userNameEn: '',
       userNameCh: '',
@@ -106,18 +116,60 @@ export default {
       }
     }
 
-    const createUser = async () => {
+    const submitUser = async () => {
       try {
-        const response = await userAPI.create(newUser.value)
+        let response
+        if (editMode.value) {
+          response = await userAPI.update(editUsername.value, newUser.value)
+        } else {
+          response = await userAPI.create(newUser.value)
+        }
         const data = response.data
         message.value = { type: data.success ? 'success' : 'error', text: data.message }
         if (data.success) {
-          newUser.value = { userNameEn: '', userNameCh: '', password: '', role: 'Customer' }
+          resetForm()
           searchUsers()
         }
       } catch (error) {
-        message.value = { type: 'error', text: '创建用户失败' }
+        message.value = { type: 'error', text: editMode.value ? '更新用户失败' : '创建用户失败' }
       }
+    }
+
+    const editUser = (user) => {
+      editMode.value = true
+      editUsername.value = user.userNameEn
+      newUser.value = {
+        userNameEn: user.userNameEn,
+        userNameCh: user.userNameCh,
+        password: '',
+        role: user.role
+      }
+      message.value = null
+    }
+
+    const deleteUser = async (username) => {
+      if (!confirm('确定要删除这个用户吗？')) return
+      try {
+        const response = await userAPI.delete(username)
+        const data = response.data
+        message.value = { type: data.success ? 'success' : 'error', text: data.message }
+        if (data.success) {
+          searchUsers()
+        }
+      } catch (error) {
+        message.value = { type: 'error', text: '删除用户失败' }
+      }
+    }
+
+    const cancelEdit = () => {
+      resetForm()
+    }
+
+    const resetForm = () => {
+      editMode.value = false
+      editUsername.value = ''
+      newUser.value = { userNameEn: '', userNameCh: '', password: '', role: 'Customer' }
+      message.value = null
     }
 
     const formatDate = (dateStr) => {
@@ -135,8 +187,12 @@ export default {
       searchRole,
       newUser,
       message,
+      editMode,
       searchUsers,
-      createUser,
+      submitUser,
+      editUser,
+      deleteUser,
+      cancelEdit,
       formatDate
     }
   }
@@ -285,5 +341,40 @@ th {
   padding: 2rem;
   text-align: center;
   color: #999;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cancel-btn {
+  padding: 0.75rem 2rem;
+  background: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.edit-btn {
+  padding: 0.25rem 0.75rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.delete-btn {
+  padding: 0.25rem 0.75rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>

@@ -40,7 +40,9 @@ export const productAPI = {
 export const userAPI = {
   search: (userName, role) => api.get('/users', { params: { userName, role } }),
   create: (user) => api.post('/users', user),
-  getByUsername: (username) => api.get(`/users/${username}`)
+  getByUsername: (username) => api.get(`/users/${username}`),
+  update: (username, user) => api.put(`/users/${username}`, user),
+  delete: (username) => api.delete(`/users/${username}`)
 }
 
 export const uploadAPI = {
